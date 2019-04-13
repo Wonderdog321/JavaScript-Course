@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Asynchronous JavaScript</title>
+</head>
+
+<body>
+	<h1> Asynchronous JavaScript</h1>
+	<script>
+		/*const second = () => {
+			setTimeout(() => {
+				console.log('Async hey there!');				
+			}, 2000);
+		}
+		const first = () => {
+			console.log('Hey there!');
+			second();
+			console.log('The end!');
+		}
+		first();
+
+		function getRecipe(){
+			setTimeout(() => {
+				const recipeID = [122, 400, 213, 515];
+				console.log(recipeID);
+
+				setTimeout((id) => {
+					const recipe = {title: 'Fresh tomato pasta', publisher: 'Robert'};
+					console.log(`${id}: ${recipe.title}`);
+					setTimeout(publisher => {
+						const recipe = {title: 'Italian pizza', publisher: 'Jonas'}
+						console.log(recipe);
+					}, 1500, recipe.publisher);
+				}, 1000, recipeID[2]);
+			}, 3500);
+		}
+		getRecipe();
+		//----------------Promises------------
+		const getID = new Promise((resolve, reject) => {
+			setTimeout(() => {
+				resolve([122, 400, 213, 515]);
+			}, 1500);
+		});
+		const getRecipe = recID => {
+			return new Promise((resolve, reject) => {
+				setTimeout(ID =>{
+					const recipe = {title: 'Fresh tomato pasta', publisher: 'Robert'};
+					resolve(`${ID}: ${recipe.title}`);
+				}, 1500, recID)
+			});
+		}
+		const getRelated = publisher => {
+			return new Promise((resolve, reject) => {
+				setTimeout(pub => {
+					const recipe = {title: 'Italian pizza', publisher: 'Jonas'}
+					resolve(`${pub}: ${recipe.title}`);
+				}, 1500, publisher);
+			});
+		}
+		//Consumes the promises
+		getID.then(IDs => {
+			console.log(IDs);
+			return getRecipe(IDs[2]);
+		})
+		.then(recipe => {
+			console.log(recipe);
+			return getRelated('Jonas Schmedterann');
+		})
+		.then(recipe => {
+			console.log(recipe);
+		})
+		.catch(error => {
+			console.log('There was an error!');
+		});
+		//----------------------Async & Await------------/
+		//You still create promises
+		const getID = new Promise((resolve, reject) => {
+			setTimeout(() => {
+				resolve([122, 400, 213, 515]);
+			}, 1500);
+		});
+		const getRecipe = recID => {
+			return new Promise((resolve, reject) => {
+				setTimeout(ID =>{
+					const recipe = {title: 'Fresh tomato pasta', publisher: 'Robert'};
+					resolve(`${ID}: ${recipe.title}`);
+				}, 1500, recID)
+			});
+		}
+		const getRelated = publisher => {
+			return new Promise((resolve, reject) => {
+				setTimeout(pub => {
+					const recipe = {title: 'Italian pizza', publisher: 'Jonas'}
+					resolve(`${pub}: ${recipe.title}`);
+				}, 1500, publisher);
+			});
+		}
+		//AWait can only run in a async function
+		async function getRecipesAW(){
+			const ID = await getID;
+			console.log(ID);
+			const recipe = await getRecipe(IDs[2]);
+			console.log(recipe);
+			const related = await getRelated('Jonas Schmedtmann');
+			console.log(related);
+
+			return recipe;
+		}
+		getRecipesAW().then(rec => console.log(rec));
+		//--------------AJAX and API's----
+		//AJAX - Asynchronous Javascript and XML - Allows us to get data from a server without reloading the page
+		//API - Application Programming Interface - It's the interface that deals with the data from 3rd party servers or your own
+		*/
+		//--------Making AJAX calls with fetch and promises--------------
+		function getWeather(woeid) {
+			fetch(`https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/${woeid}/`)
+				.then(result => {
+					return result.json();
+				})
+				.then(data => {
+					const today = data.consolidated_weather[0];
+					console.log(
+						`Temperatures in ${data.title} stay between ${today.min_temp} and ${today.max_temp} degrees Celcius.`
+						);
+				})
+				.catch(error => {
+					console.log(error);
+				});
+		}
+		getWeather(2487956);
+		getWeather(44418);
+		async function getWeatherAW(woeid){
+			try {
+				const result = await fetch(`https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/${woeid}/`);
+				const data = await result.json();
+				const tomarrow = data.consolidated_weather[1];
+				console.log(`Temperatures tomarrow in ${data.title} stay between ${tomarrow.min_temp} and ${tomarrow.max_temp} degrees Celcius.`);
+				return data;
+			} catch (error) {
+				console.log(error);
+			}
+		}
+		let dataLondon, dataSanFransico;
+		getWeatherAW(2487956).then(data => {
+			dataSanFransico = data;
+			console.log(dataSanFransico);
+		});
+		getWeatherAW(44418).then(data => {
+			dataLondon = data;
+			console.log(dataLondon);
+		});
+	</script>
+</body>
+
+</html>
